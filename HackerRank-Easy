@@ -182,4 +182,96 @@ select max(POPULATION) - min(POPULATION) from CITY
 
 29. We define an employee's total earnings to be their monthly  worked, and the maximum total earnings to be the maximum total earnings for any employee in the Employee table. Write a query to find the maximum total earnings for all employees as well as the total number of employees who have maximum total earnings. Then print these values as 2 space-separated integers
 
+select salary*months, count(employee_id) from Employee
+group by salary*months 
+order by salary*months desc
+limit 1
 
+
+30. Query the following two values from the STATION table:
+The sum of all values in LAT_N rounded to a scale of 2 decimal places
+The sum of all values in LONG_W rounded to a scale of 2 decimal places
+
+select round(sum(LAT_N),2), round(sum(LONG_W),2) from STATION
+
+
+31. Query the sum of Northern Latitudes (LAT_N) from STATION having values greater than 38.7880 and less than 137.2345. Truncate your answer to 4 decimal places
+
+select round(sum(LAT_N),4) from STATION 
+where LAT_N > 38.7880 and LAT_N<137.2345
+
+
+32. Query the greatest value of the Northern Latitudes (LAT_N) from STATION that is less than 137.2345. Truncate your answer to 4 decimal places
+
+select round(max(LAT_N),4) from STATION
+where LAT_N < 137.2345
+
+
+33. Query the Western Longitude (LONG_W) for the largest Northern Latitude (LAT_N) in STATION that is less than 137.2345. Round your answer to 4 decimal places
+
+select round(LONG_W,4) from STATION
+where LAT_N < 137.2345
+order by LAT_N desc
+limit 1
+
+
+34. Query the smallest Northern Latitude (LAT_N) from STATION that is greater than 38.7880. Round your answer to 4 decimal places
+
+select round(min(LAT_N),4) from STATION
+where LAT_N > 38.7880
+
+
+35. Query the Western Longitude (LONG_W)where the smallest Northern Latitude (LAT_N) in STATION is greater than 38.7880. Round your answer to 4 decimal places
+
+select round(LONG_W,4) from STATION
+where LAT_N > 38.7880
+order by LAT_N
+limit 1
+
+
+36. Given the CITY and COUNTRY tables, query the sum of the populations of all cities where the CONTINENT is 'Asia'
+
+select sum(CITY.POPULATION) 
+from CITY join COUNTRY
+on CITY.COUNTRYCODE = COUNTRY.CODE
+where COUNTRY.CONTINENT = 'Asia'
+
+
+37. Given the CITY and COUNTRY tables, query the names of all cities where the CONTINENT is 'Africa'
+
+select CITY.NAME 
+from CITY join COUNTRY
+on CITY.COUNTRYCODE = COUNTRY.CODE
+where COUNTRY.CONTINENT = 'Africa'
+
+
+38. Given the CITY and COUNTRY tables, query the names of all the continents (COUNTRY.Continent) and their respective average city populations (CITY.Population) rounded down to the nearest integer
+
+select COUNTRY.CONTINENT, floor(avg(CITY.POPULATION))
+from CITY join COUNTRY
+on CITY.COUNTRYCODE = COUNTRY.CODE
+group by COUNTRY.CONTINENT
+
+
+39. P(R) represents a pattern drawn by Julia in R rows. The following pattern represents P(5):
+* 
+* * 
+* * * 
+* * * * 
+* * * * *
+Write a query to print the pattern P(20)
+
+select repeat('* ', @NUMBER := @NUMBER + 1) FROM information_schema.tables, 
+(SELECT @NUMBER:=0) t LIMIT 20;
+
+
+40.P(R) represents a pattern drawn by Julia in R rows. The following pattern represents P(5):
+* * * * * 
+* * * * 
+* * * 
+* * 
+*
+Write a query to print the pattern P(20)
+
+select repeat('* ', @NUMBER := @NUMBER-1) FROM information_schema.tables, 
+(SELECT @NUMBER:=21) t LIMIT 20;
