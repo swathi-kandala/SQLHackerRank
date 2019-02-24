@@ -99,3 +99,87 @@ where CITY not regexp '^[aeiou]' or CITY not regexp '[aeiou]$'
 
 select distinct CITY from STATION
 where CITY not regexp '^[aeiou]' and CITY not regexp '[aeiou]$'
+
+
+18. Samantha was tasked with calculating the average monthly salaries for all employees in the EMPLOYEES table, but did not realize her keyboard's 0 key was broken until after completing the calculation. She wants your help finding the difference between her miscalculation (using salaries with any zeroes removed), and the actual average salary.
+Write a query calculating the amount of error (i.e.:  average monthly salaries), and round it up to the next integer
+
+select ceil(avg(SALARY)-avg(replace(SALARY,'0',''))) from EMPLOYEES
+
+
+19. Query the Name of any student in STUDENTS who scored higher than 75 Marks. Order your output by the last three characters of each name. If two or more students both have names ending in the same last three characters (i.e.: Bobby, Robby, etc.), secondary sort them by ascending ID
+
+select NAME from STUDENTS
+where MARKS > 75
+order by right(NAME, 3), ID
+
+
+20. Write a query that prints a list of employee names (i.e.: the name attribute) from the Employee table in alphabetical order
+
+select NAME from EMPLOYEE 
+order by NAME
+
+
+21. Write a query that prints a list of employee names (i.e.: the name attribute) for employees in Employee having a salary greater than  $2000 per month who have been employees for less than 10 months. Sort your result by ascending employee_id
+
+select NAME from EMPLOYEE
+where SALARY > 2000 and MONTHS <10
+order by EMPLOYEE_ID
+
+
+22. Write a query identifying the type of each record in the TRIANGLES table using its three side lengths. Output one of the following statements for each record in the table:
+Equilateral: It's a triangle with  sides of equal length.
+Isosceles: It's a triangle with  sides of equal length.
+Scalene: It's a triangle with  sides of differing lengths.
+Not A Triangle: The given values of A, B, and C don't form a triangle
+
+select case
+when A+B>C and B+C>A and C+A>B then
+case 
+when A=B and B=C then 'Equilateral'
+when (A=B or B=C) or (A=C or C=B) or (C=A or A=B) then 'Isosceles'
+when A!=B and B!=C and C!=A then'Scalene'
+end
+else
+'Not A Triangle'
+end
+from TRIANGLES
+
+
+23. Query a count of the number of cities in CITY having a Population larger than 100000
+
+select count(NAME) from CITY
+where POPULATION > 100000
+
+
+24. Query the total population of all cities in CITY where District is California
+
+select sum(POPULATION) from CITY
+where DISTRICT = 'California'
+
+
+25. Query the average population of all cities in CITY where District is California
+
+select avg(POPULATION) from CITY
+where DISTRICT ='California'
+
+
+26. Query the average population for all cities in CITY, rounded down to the nearest integer
+
+select round(avg(POPULATION)) from CITY
+
+
+27. Query the sum of the populations for all Japanese cities in CITY. The COUNTRYCODE for Japan is JPN
+
+select sum(POPULATION) from CITY 
+where COUNTRYCODE='JPN'
+
+
+28. Query the difference between the maximum and minimum populations in CITY
+
+select max(POPULATION) - min(POPULATION) from CITY
+
+
+29. We define an employee's total earnings to be their monthly  worked, and the maximum total earnings to be the maximum total earnings for any employee in the Employee table. Write a query to find the maximum total earnings for all employees as well as the total number of employees who have maximum total earnings. Then print these values as 2 space-separated integers
+
+
