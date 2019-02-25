@@ -1,0 +1,31 @@
+1. Generate the following two result sets:
+Query an alphabetically ordered list of all names in OCCUPATIONS, immediately followed by the first letter of each profession as a parenthetical (i.e.: enclosed in parentheses). For example: AnActorName(A), ADoctorName(D), AProfessorName(P), and ASingerName(S).
+Query the number of ocurrences of each occupation in OCCUPATIONS. Sort the occurrences in ascending order, and output them in the following format: 
+There are a total of [occupation_count] [occupation]s.
+where [occupation_count] is the number of occurrences of an occupation in OCCUPATIONS and [occupation] is the lowercase occupation name. If more than one Occupation has the same [occupation_count], they should be ordered alphabetically
+
+select concat(NAME, '(',left(OCCUPATION,1),')') from OCCUPATIONS
+order by NAME;
+select concat('There are a total of ',count(NAME),' ',lower(OCCUPATION),'s.') from OCCUPATIONS
+group by OCCUPATION
+order by count(NAME),OCCUPATION;
+
+
+2. Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically and displayed underneath its corresponding Occupation. The output column headers should be Doctor, Professor, Singer, and Actor, respectively
+
+set @d=0,@p=0,@s=0,@a=0;
+select min(Doctor), min(Professor), min(Singer), min(Actor)
+from(
+    select case 
+    when OCCUPATION='Doctor' then @d:=@d+1
+    when OCCUPATION='Professor' then @p:=@p+1
+    when OCCUPATION='Singer' then @s:=@s+1
+    when OCCUPATION='Actor' then @a:=@a+1
+    end as row,
+    case when OCCUPATION='Doctor' then NAME end as Doctor,
+    case when OCCUPATION='Professor' then NAME end as Professor,
+    case when OCCUPATION='Singer' then NAME end as Singer,
+    case when OCCUPATION='Actor' then NAME end as Actor
+from OCCUPATIONS 
+order by NAME) tmp
+group by row
