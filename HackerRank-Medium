@@ -106,3 +106,70 @@ having count(h.HACKER_ID)> 1
 order by  count(s.HACKER_ID) desc, h.HACKER_ID
 
 
+9. Julia asked her students to create some coding challenges. Write a query to print the hacker_id, name, and the total number of challenges created by each student. Sort your results by the total number of challenges in descending order. If more than one student created the same number of challenges, then sort the result by hacker_id. If more than one student created the same number of challenges and the count is less than the maximum number of challenges created, then exclude those students from the result
+Hackers: The hacker_id is the id of the hacker, and name is the name of the hacker. 
+Challenges: The challenge_id is the id of the challenge, and hacker_id is the id of the student who created the challenge
+
+select h.HACKER_ID, h.NAME, count(c.CHALLENGE_ID) as cnt
+from HACKERS h join CHALLENGES c
+on h.HACKER_ID = c.HACKER_ID
+group by h.HACKER_ID, h.NAME
+having cnt = (select max(tmp.cnt)
+             from (select count(HACKER_ID) as cnt from CHALLENGES
+             group by HACKER_ID
+             order by HACKER_ID) tmp)
+             or
+    cnt in (select tmp.cnt from
+            (select count(HACKER_ID) as cnt from CHALLENGES
+             group by HACKER_ID
+            ) tmp
+           group by tmp.cnt
+           having count(tmp.cnt)=1)
+order by cnt desc, h.HACKER_ID
+
+
+10. The total score of a hacker is the sum of their maximum scores for all of the challenges. Write a query to print the hacker_id, name, and total score of the hackers ordered by the descending score. If more than one hacker achieved the same total score, then sort the result by ascending hacker_id. Exclude all hackers with a total score of 0 from your result
+Hackers: The hacker_id is the id of the hacker, and name is the name of the hacker. 
+Submissions: The submission_id is the id of the submission, hacker_id is the id of the hacker who made the submission, challenge_id is the id of the challenge for which the submission belongs to, and score is the score of the submission. 
+
+select tmp.HACKER_ID, tmp.NAME, sum(tmp.maxScore)
+from ((select h.HACKER_ID, h.NAME, max(s.SCORE) as maxScore
+    from HACKERS h join SUBMISSIONS s
+    on h.HACKER_ID = s.HACKER_ID
+    group by h.HACKER_ID, h.NAME, s.CHALLENGE_ID
+    ) tmp)
+group by tmp.HACKER_ID, tmp.NAME
+having sum(tmp.maxScore) > 0
+order by sum(tmp.maxScore) desc, tmp.HACKER_ID
+
+
+11. You are given a table, Projects, containing three columns: Task_ID, Start_Date and End_Date. It is guaranteed that the difference between the End_Date and the Start_Date is equal to 1 day for each row in the table.
+If the End_Date of the tasks are consecutive, then they are part of the same project. Samantha is interested in finding the total number of different projects completed.
+Write a query to output the start and end dates of projects listed by the number of days it took to complete the project in ascending order. If there is more than one project that have the same number of completion days, then order by the start date of the project.
+
+select START_DATE , min(END_DATE)
+from 
+    (select START_DATE from PROJECTS WHERE START_DATE not in (SELECT END_DATE from PROJECTS)) a,
+    (select END_DATE from PROJECTS WHERE END_DATE not in (SELECT START_DATE from PROJECTS)) b
+where START_DATE < END_DATE
+group by START_DATE
+order by datediff(START_DATE,min(END_DATE)) desc, START_DATE
+
+
+12. You are given three tables: Students, Friends and Packages. Students contains two columns: ID and Name. Friends contains two columns: ID and Friend_ID (ID of the ONLY best friend). Packages contains two columns: ID and Salary (offered salary in $ thousands per month).
+Write a query to output the names of those students whose best friends got offered a higher salary than them. Names must be ordered by the salary amount offered to the best friends. It is guaranteed that no two students got same salary offer.
+
+select a.NAME
+from STUDENTS a join FRIENDS f
+on a.ID=f.ID
+join STUDENTS b
+on b.ID= f.FRIEND_ID
+join PACKAGES p1
+on a.ID = p1.ID
+join PACKAGES p2
+on b.ID = p2.ID
+where p1.SALARY < p2.SALARY
+order by p2.SALARY
+
+
+13. 
