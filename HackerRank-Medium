@@ -61,5 +61,48 @@ Query the Euclidian Distance between points and round it to a scale of  decimal 
 select round(sqrt(Power((max(LAT_N)-min(LAT_N)), 2)+ Power((max(LONG_W)-min(LONG_W)), 2)),4) from STATION
 
 
+6. A median is defined as a number separating the higher half of a data set from the lower half. Query the median of the Northern Latitudes (LAT_N) from STATION and round your answer to 4 decimal places
 
-6. 
+set @ct := (select count(*) from STATION);
+set @row_id := 0;
+
+select round(avg(LAT_N),4)
+from (select * from STATION order by LAT_N) a
+where (select @row_id := @row_id + 1) between @ct/2 and @ct/2 + 1
+
+
+7. You are given two tables: Students and Grades. Students contains three columns ID, Name and Marks. Grades contains Grade, Min_Mark, Max_Mark.
+Ketty gives Eve a task to generate a report containing three columns: Name, Grade and Mark. Ketty doesn't want the NAMES of those students who received a grade lower than 8. The report must be in descending order by grade -- i.e. higher grades are entered first. If there is more than one student with the same grade (8-10) assigned to them, order those particular students by their name alphabetically. Finally, if the grade is lower than 8, use "NULL" as their name and list them by their grades in descending order. If there is more than one student with the same grade (1-7) assigned to them, order those particular students by their marks in ascending order.
+
+select case
+when g.GRADE >=8 then s.NAME
+when g.GRADE<8 then 'NULL' end, g.GRADE, s.MARKS
+from STUDENTS s join GRADES g
+on s.MARKS between g.MIN_MARK and g.MAX_MARK
+order by g.GRADE desc,
+case
+when g.GRADE >=8 then s.NAME
+when g.GRADE<8 then s.MARKS
+end
+
+
+8. Julia just finished conducting a coding contest, and she needs your help assembling the leaderboard! Write a query to print the respective hacker_id and name of hackers who achieved full scores for more than one challenge. Order your output in descending order by the total number of challenges in which the hacker earned a full score. If more than one hacker received full scores in same number of challenges, then sort them by ascending hacker_id. The following tables contain contest data:
+Hackers: The hacker_id is the id of the hacker, and name is the name of the hacker. 
+Difficulty: The difficult_level is the level of difficulty of the challenge, and score is the score of the challenge for the difficulty level. 
+Challenges: The challenge_id is the id of the challenge, the hacker_id is the id of the hacker who created the challenge, and difficulty_level is the level of difficulty of the challenge. 
+Submissions: The submission_id is the id of the submission, hacker_id is the id of the hacker who made the submission, challenge_id is the id of the challenge that the submission belongs to, and score is the score of the submission. 
+
+select h.HACKER_ID, h.NAME
+from SUBMISSIONS s
+join CHALLENGES c
+on s.CHALLENGE_ID = c.CHALLENGE_ID
+join DIFFICULTY d on 
+c.DIFFICULTY_LEVEL = d.DIFFICULTY_LEVEL
+join HACKERS h
+on s.HACKER_ID = h.HACKER_ID
+where s.SCORE = d.SCORE 
+group by h.HACKER_ID, h.NAME
+having count(h.HACKER_ID)> 1
+order by  count(s.HACKER_ID) desc, h.HACKER_ID
+
+
