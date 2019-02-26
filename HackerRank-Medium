@@ -29,3 +29,37 @@ from(
 from OCCUPATIONS 
 order by NAME) tmp
 group by row
+
+
+3. Amber's conglomerate corporation just acquired some new companies. Each of the companies follows this hierarchy: Founder => Lead Manager => Senior Manager => Manager => Employee
+Given the table schemas below, write a query to print the company_code, founder name, total number of lead managers, total number of senior managers, total number of managers, and total number of employees. Order your output by ascending company_code
+
+select c.COMPANY_CODE, c.FOUNDER, count(distinct e.LEAD_MANAGER_CODE), count(distinct e.SENIOR_MANAGER_CODE), count(distinct e.MANAGER_CODE), count(distinct e.EMPLOYEE_CODE)
+from COMPANY c join EMPLOYEE e
+on c.COMPANY_CODE = e.COMPANY_CODE
+group by c.COMPANY_CODE, c.FOUNDER
+order by c.COMPANY_CODE
+
+
+4. Consider P1(a,b) and P2(c,d) to be two points on a 2D plane.
+ a happens to equal the minimum value in Northern Latitude (LAT_N in STATION).
+ b happens to equal the minimum value in Western Longitude (LONG_W in STATION).
+ c happens to equal the maximum value in Northern Latitude (LAT_N in STATION).
+ d happens to equal the maximum value in Western Longitude (LONG_W in STATION).
+Query the Manhattan Distance between points and round it to a scale of  decimal places
+
+select round(abs(max(LAT_N)-min(LAT_N))+ abs(max(LONG_W)-min(LONG_W)),4) from STATION
+
+
+5. Consider P1(a,b) and P2(c,d) to be two points on a 2D plane.
+ a happens to equal the minimum value in Northern Latitude (LAT_N in STATION).
+ b happens to equal the minimum value in Western Longitude (LONG_W in STATION).
+ c happens to equal the maximum value in Northern Latitude (LAT_N in STATION).
+ d happens to equal the maximum value in Western Longitude (LONG_W in STATION).
+Query the Euclidian Distance between points and round it to a scale of  decimal places
+
+select round(sqrt(Power((max(LAT_N)-min(LAT_N)), 2)+ Power((max(LONG_W)-min(LONG_W)), 2)),4) from STATION
+
+
+
+6. 
