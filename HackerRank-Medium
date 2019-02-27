@@ -172,4 +172,18 @@ where p1.SALARY < p2.SALARY
 order by p2.SALARY
 
 
-13. 
+13. You are given a table, Functions, containing two columns: X and Y.Two pairs (X1, Y1) and (X2, Y2) are said to be symmetric pairs if X1 = Y2 and X2 = Y1.Write a query to output all such symmetric pairs in ascending order by the value of X
+
+select a.X as tmp, a.Y
+from FUNCTIONS a join FUNCTIONS b 
+on a.X = b.Y and b.X = a.Y
+where a.X < b.X
+union all
+select X as tmp, Y
+from FUNCTIONS 
+where X=Y
+group by X,Y
+having count(*) >1 
+order by tmp;
+
+
